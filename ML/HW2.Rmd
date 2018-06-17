@@ -1,0 +1,655 @@
+---
+title: "HW2"
+author: "Kendra Chalkley"
+date: "May 3, 2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo=FALSE, messages=FALSE, warning=FALSE}
+library(tidyverse)
+library(MASS)
+housing <- Boston
+```
+
+# Problem 1
+## 1.1 Explanatory data analysis
+
+### a) How many binary attributes are in the dataset? List them
+
+There is ony one binary attribute: column 4: chas
+
+### b) Correlations in between the first 13 attributes and the target attribute
+
+What are the attribute names with the highest positive and negative correlations to the target attribute?
+
+```{r echo=FALSE}
+cors <- housing %>%
+  cor()
+
+targetcor <- cors['medv',]
+
+targetcor
+```
+The highest positive correlation is in column 6 (rm) with a value of 69.5% and the highest negative correlation is in column 13 (lstat) with a value of -73.8%
+
+### c) Scatter plots
+```{r echo=FALSE}
+long_housing <- gather(housing, measure, value, crim:lstat)
+
+ggplot(long_housing, aes(y=value, x=medv))+
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~measure, scales='free_y')
+```
+
+rm (column 6) looks most linear. the binary value, chas (column 4) seems least linear, not only because it's binary, but the 1 values are in the center of the plot with the 0s at either end.  
+
+### d) Full correlation matrix
+
+The highest correlation is between rm and tax (columns 6 and 7) at 91%
+
+## 1.2 Linear Regression
+
+### a) LR_solve 
+The funciton below uses R's built in linear regression to find coefficients. The more appropriate calculation would be: `w <- ginv(t(X)%*%X) %*% t(X) %*%y` where `t(X)` indicates the $X^T$, `ginv(X)` indicates the $X^{-1}$, and `X%*%y` indicates $Xy$. However, this is just the very beginning of my matrix multiplication problems which I have been unable to solve in many many hours of trying, so I've used R's linear model to obtain these coefficients as a solid first step. 
+
+```{r}
+LR_solve <- function(X,y){
+  model<- lm(y~X[,1]+
+       X[,2]+
+       X[,3]+
+       X[,4]+
+       X[,5]+
+       X[,6]+
+       X[,7]+
+       X[,8]+
+       X[,9]+
+       X[,10]+
+       X[,11]+
+       X[,12]+
+       X[,13]
+     )  
+#    
+
+    w <- summary(model)$coefficients[,'Estimate']
+  return(w)
+}
+```
+
+### b) LR_predict
+
+```{r}
+LR_predict <- function(X,w){
+  X <- as.matrix(add_column(X, intercept=1, .before=1))
+
+  num_obs <-nrow(X)
+  num_feature <- ncol(X)
+  predicts <- integer()
+  
+  for (i in 1:num_obs){
+#    print(w)
+ #   print(length(w))
+  #  print(X[i,])
+  #  print(length(X[i,]))
+    predicts[i] <- w%*%X[i,]
+  }
+  return(predicts)
+}
+
+```
+
+### c) main3_2
+
+First a formula to calculate mean squared error: 
+```{r}
+MSE_calc <- function(predictions, reality){
+  mse <- 0
+  totalerror <- 0
+
+  num_predictions <-length(predictions)
+  for( i in 1:num_predictions){
+    dif <- predictions[i]-reality[i]
+
+    sqdif <- dif^2
+
+    totalerror <- totalerror+sqdif
+  }
+  
+  mse <- (totalerror/num_predictions)
+  return(mse)
+}
+
+```
+
+And then the actual calculation of values: 
+```{r}
+housing_train <- housing[1:433,]
+housing_test <- housing[434:506,]
+
+lr_weights <- LR_solve(data.frame(housing_train[,1:13]),housing_train[,14])
+
+lr_train_predictions <- LR_predict(housing_train[,1:13],lr_weights)
+lr_test_predictions <- LR_predict(housing_test[,1:13],lr_weights)
+
+trainerror <- MSE_calc(lr_train_predictions,housing_train[,14])
+testerror <- MSE_calc(lr_test_predictions,housing_test[,14])
+
+```
+
+### d) Report
+Weights: `r lr_weights`
+Training error: `r trainerror`
+Test error: `r testerror`
+
+Oddly, the test error is better for this set, possibly because the test set does not include the any of the high value outliers that cause high error in the training set. 
+
+```{r}
+
+df1 <- data_frame(housing_train[,14],lr_train_predictions)
+
+df2 <- data_frame(housing_test[,14],lr_test_predictions)
+
+ggplot(df1,aes(x=housing_train[,14],y=lr_train_predictions))+
+  geom_point()+
+  geom_smooth(method='lm')
+
+ggplot(df2,aes(x=housing_test[,14],y=lr_test_predictions))+
+  geom_point()
+
+```
+
+## 1.3 Online gradient descent
+
+### a) Implement procedure
+
+A function for normalizing a vector to values between 0 and 1. 
+```{r}  
+normalize <- function(data){
+  min <- min(data)
+  range <- max(data)-min
+  n <- length(data)
+  
+  normaldata <- integer(n)
+  
+  for(i in 1:n){
+    point <- data[i]
+    if(point==0){
+      normaldata[i] <- 0
+    }else{
+      normaldata[i] <- (point-min)/range  
+    }
+  }
+    
+  return(normaldata)
+}  
+```
+
+Then the actual gradient descent function. 
+```{r}
+gd_online <- function(Xtrain,Xtest,ytrain,ytest,stepnum){
+  d <- length(Xtrain[1,])
+  n <- length(ytrain)
+  
+  XwithInt <- as.matrix(add_column(Xtrain, intercept=1, .before=1))
+  
+#initialize weights
+  gd_weights <-integer(d+1)
+  
+#initialize empty df
+  errors <- data_frame(iter=1:stepnum,trainerror=0,testerror=0)
+  
+  for (t in 1:stepnum){
+#select a datapoint      
+        i <- t%%n
+        if(i==0){i <- n}
+#set a learning rate
+        a <-  .1 #2/t
+
+#Update Weight vector
+    #helpful precalculation of error for this point y-f(x_i,w)
+    point_error <-ytrain[i]-LR_predict(Xtrain[i,],gd_weights)
+    
+#    gd_weights <- gd_weights+(a*point_error)*XwithInt[i]
+
+#update intercept
+    gd_weights[1] <- gd_weights[1]+(a*point_error)
+    
+#update other weights
+    for (j in 2:d+1){
+        gd_weights[j] <- gd_weights[j]+(a*point_error*Xtrain[i,j-1])
+    }
+    
+#    print(gd_weights)
+    train_predictions <- LR_predict(Xtrain[,1:13],gd_weights)
+    test_predictions <- LR_predict(Xtest[,1:13],gd_weights)
+
+    trainerror <- MSE_calc(train_predictions,ytrain)
+    testerror <- MSE_calc(test_predictions,ytest)
+    
+    errors[t,'trainerror'] <- trainerror
+    errors[t,'testerror'] <- testerror
+  }
+  returnvals <- list(errors, gd_weights)
+return(returnvals)
+}
+```
+
+### b) main3_3 
+
+The gradient descent function as written above is applied to normalized data below.
+
+```{r}
+
+  housing_train <- housing[1:433,]
+  housing_test <- housing[434:506,]
+  
+  Xtrain <- housing_train[,1:13]
+  Xtest <- housing_test[,1:13]
+  ytrain <- housing_train[,14]
+  ytest <- housing_test[,14]
+  d <- ncol(Xtrain)
+  ntrain <- nrow(Xtrain)
+  ntest <- nrow(Xtest)
+  
+#normalize data
+normalXtrain <-  data.frame(matrix(ncol = d, nrow = ntrain))
+  for(col in 1:d){
+    normalXtrain[,col] <- normalize(Xtrain[,col])
+  }
+
+normalXtest <-  data.frame(matrix(ncol = d, nrow = ntest))
+  for(col in 1:d){
+    normalXtest[,col] <- normalize(Xtest[,col])
+  }
+
+gd_output <- gd_online(normalXtrain,normalXtest,ytrain,ytest,1000)
+```
+
+The resulting errors were:
+
+1. a=2/t
+  + training error: 59.2 
+  + test error 69.3
+1. a=.1
+  + training error: 34.8 
+  + test error 27.5
+
+```{r}
+gd_errors <- gd_output[[1]] %>% 
+  gather(set, error, trainerror:testerror) %>% 
+  filter(iter<10|iter%%50==0)
+gd_weight <- gd_output[[2]]
+
+errorplot <- ggplot(gd_errors, aes(x=iter, y=error, color=set))+
+  geom_point()
+
+finalerrors <- gd_errors %>% 
+  filter(iter==1000)
+
+errorplot
+```
+
+### c) Un-normalized data
+
+This accidentally made it into my code above, and ruined my life for a week. Using weights trained on normal data on unnormal data results in complete disaster. 
+```{r}
+#UNNORMALIZED DATA
+gd_test_predictions <- LR_predict(housing_test[,1:13],gd_weight)
+gd_test_predictions
+
+gd_train_predictions <- LR_predict(housing_train[,1:13],gd_weight)
+
+```
+
+
+Training and and evaluating entirely with unnormalized data also causes problems, quickly reaching unreasonable values which ggplot stumbles over... 
+
+```{r}
+
+  housing_train <- housing[1:433,]
+  housing_test <- housing[434:506,]
+  
+  Xtrain <- housing_train[,1:13]
+  Xtest <- housing_test[,1:13]
+  ytrain <- housing_train[,14]
+  ytest <- housing_test[,14]
+  d <- ncol(Xtrain)
+  ntrain <- nrow(Xtrain)
+  ntest <- nrow(Xtest)
+  
+gd_output <- gd_online(Xtrain,Xtest,ytrain,ytest,1000)
+
+gd_errors <- gd_output[[1]] %>% 
+  gather(set, error, trainerror:testerror) %>% 
+  filter(iter<10|iter%%50==0)
+gd_weight <- gd_output[[2]]
+
+errorplot <- ggplot(gd_errors, aes(x=iter, y=error, color=set))+
+  geom_point()
+
+finalerrors <- gd_errors %>% 
+  filter(iter==1000)
+
+errorplot
+
+```
+
+### d) 
+
+Training and test errors for a constant learning rate are included above. the constant rate seems to have been much more effective in the end, though possibly less consistent in later iterations (this is hard to see becuase of the difference in scale... between plots. I'll include these plots if I have time to reorganize my code and save results under different variables later)
+
+## 1.4
+
+### a) extendx 
+```{r}
+extendx <- function(X){
+  newX <- X%>% 
+    mutate_all(funs(squared=.^2))
+  return(newX)
+}
+
+extendedTrain <- extendx(housing_train[,1:13])
+extendedTest <- extendx(housing_test[,1:13])
+yTrain <- housing_train[,14]
+yTest <- housing_test[,14]
+
+```
+
+### b) Binary
+
+The binary attribute stayed the same. 1^2=1 and 0^2=0
+
+### c) Extended regression
+
+Again, ideally one would solve for the weights according to the formula copied above, but that math is not working for me, and I've used R's linear regression to cope. There's some added shenanigans below to deal with the fact that R removes chas_squared from the weight list, because it is redundant to chas (becuase it is binary), but generally, this is the same model as before. 
+
+Training error for this model is Xtrainerror 15, test error is 45.
+
+```{r}
+
+LR_solve26 <- function(X,y){
+  model<- lm(y~X[,1]+
+       X[,2]+
+       X[,3]+
+       X[,4]+
+       X[,5]+
+       X[,6]+
+       X[,7]+
+       X[,8]+
+       X[,9]+
+       X[,10]+
+       X[,11]+
+       X[,12]+
+       X[,13]+
+       X[,14]+
+       X[,15]+
+       X[,16]+
+       X[, 17]+
+       X[,18]+
+       X[,19]+
+       X[,20]+
+       X[,21]+
+       X[,22]+
+       X[,23]+
+       X[,24]+
+       X[,25]+
+       X[,26]
+     )  
+  w <- summary(model)$coefficients[,'Estimate']
+  return(w)
+}
+
+weights <- LR_solve26(extendedTrain,yTrain) %>% 
+  as_data_frame() %>% 
+  add_row(value=0,.after = 16) %>% 
+  as_vector()
+
+train_predictions <- LR_predict(extendedTrain,weights)
+test_predictions <- LR_predict(extendedTest,weights)
+
+Xtrainerror <- MSE_calc(train_predictions,yTrain)
+Xtesterror <- MSE_calc(test_predictions,yTest)
+
+Xtrainerror
+Xtesterror
+```
+### d) Report
+
+Training error: `r Xtrainerror`
+Test error: `r Xtesterror`
+
+Training error went down and test error increased, suggesting that this model may have overfit. The model that is linear in x will likely have better generalization error and is thus the better model according to this data. 
+
+# Problem 2
+ 
+## 2.1 Data Analysis
+```{r, echo=FALSE}
+class_train <- read_csv('hw2Data/classification_train.txt', col_names = FALSE, col_types = 'ddd')
+class_test <- read_csv('hw2Data/classification_test.txt', col_names = FALSE, col_types = 'ddd')
+```
+
+### a) Plot
+```{r, echo=FALSE}
+ggplot(class_train, aes(x=X1, y=X2, color=as.character(X3), shape=as.character(X3)))+
+  geom_point()
+```
+
+
+### b) Report
+
+These categories are not perfectly separable with a linear decision boundary. 
+
+## 2.2 Logistic regression
+### a) Derive Gradient of log likelihood
+
+Given the log liklihood of a data set given parameters as below: 
+
+$$-log(p(D,\mathbf{w})=\sum\limits_{i=1}^n y_ilog(\mu_i) + (1-y_i)log(1-\mu_i)$$
+
+Derive the gradient of said log likelihood:  
+
+$$-\frac{\delta}{\delta w_j}-log(p(D,\mathbf{w})=\sum\limits_{i=1}^n x_{i,j}(y_i -g(z_i))$$
+
+
+### b)  GLR
+
+Something is wrong in this function, but I'm tired and giving up. Happy weekend. 
+```{r, eval=FALSE}
+logr_predict<- function(X,logr_weights){
+  X <- as.matrix(X)
+
+  
+  num_obs <-1
+  num_obs <-nrow(X)
+  num_feature <- ncol(X)
+
+  z <- integer()
+  prob <- integer()
+  class <- integer()
+  
+  for(i in 1:num_obs){
+    z[i] <- logr_weights %*% X[i,]
+    print(z[i])
+    prob[i] <- 1/(1+exp(-z[i]))
+    if(prob[i] > .5){
+      class[i] <- 1
+    }
+    else{class[i] <- 0}
+  }
+
+  return(class)
+}
+  
+
+
+GLR <- function(Xtrain,Xtest,ytrain,ytest,stepnum){
+  d <- ncol(Xtrain)
+  ntrain <- nrow(ytrain)
+  
+  XwithInt <- as.matrix(add_column(Xtrain, intercept=1, .before=1))
+  
+#initialize weights
+  logr_weights <-rep(1,d+1)
+  
+  Xtrain <- as.matrix(Xtrain)
+
+  y <- as.matrix(y)
+
+#initialize empty df
+  errors <- data_frame(iter=1:stepnum,trainerror=0,testerror=0)
+  
+  for (k in 1:stepnum){
+
+#select a datapoint      
+        i <- k%%ntrain
+        if(i==0){i <- ntrain}
+
+#make prediction    
+        guessvect <- logr_predict(XwithInt[i,],logr_weights)
+        guess <- guessvect[1]
+        incorrect <- ytrain[i]-guess
+        
+        if (incorrect){
+        #set a learning rate
+                a <- 2/k
+        #Update Weight vector
+            for (j in 1:d+1){
+                logr_weights[j] <- logr_weights[j]+(a*XwithInt[i,j])
+            }
+
+        #                logr_weights <- logr_weights+(a*XwithInt[i])
+        }
+    }
+return(logr_weights)
+}
+
+#    train_predictions <- LR_predict(Xtrain[,1:13],gd_weights)
+#    test_predictions <- LR_predict(Xtest[,1:13],gd_weights)
+
+#    trainerror <- MSE_calc(train_predictions,ytrain)
+#    testerror <- MSE_calc(test_predictions,ytest)
+#    
+#    errors[t,'trainerror'] <- trainerror
+#    errors[t,'testerror'] <- testerror
+#  }
+#  returnvals <- list(errors, gd_weights)
+#return(returnvals)
+
+
+
+```
+### c) main2
+
+```{r}
+trainX<- class_train[,1:2]
+trainy <- class_train[,3]
+testX <- class_test[,1:2]
+testy <- class_test[,3]
+
+#GLR(trainX,testX,trainy,testy,500)
+```
+
+
+## 2.3 Generative model
+I lost an hour of work to a keyboard shortcut. Please forgive my brevity. 
+
+### a) Class Conditional ML
+For a classes 1 ($t_n=1$)and 2 ($t_n=0$), the class conditional ML estimates of $\mu$ is given (per Bishop 4.75 and 4.76) by
+
+$$\mu_1 = \frac{1}{N_1}\sum\limits_{n=1}^N(t_n)\mathbf{x}_n$$
+
+$$\mu_2 = \frac{1}{N_2}\sum\limits_{n=1}^N(1-t_n)\mathbf{x}_n$$
+
+### b) Covariance Matrix
+
+The calculation of $\Sigma$ is given in Bishop between 4.71 and 4.80. The process is to take the derivative of the log likelihood estimate with respect to $\Sigma$. The result is given below:
+
+$$
+\mathbf{\Sigma}=\mathbf{S}
+$$
+
+
+$$
+S=\frac{N_1}{N}\mathbf{S_1}+\frac{N_2}{N}\mathbf{S_2}
+$$
+
+$$
+\mathbf{S_1}=\frac{1}{N_1}\sum\limits_{n\in C_1} (\mathbf{x}_n-\mathbf{\mu_1})(\mathbf{x}_n-\mathbf{\mu_1})^T
+$$
+$$
+\mathbf{S_2}=\frac{1}{N_2}\sum\limits_{n\in C_2} (\mathbf{x}_n-\mathbf{\mu_2})(\mathbf{x}_n-\mathbf{\mu_2})^T
+$$
+
+
+| S1   | S   |
+| S    | S2  |
+
+
+### c) Prior
+
+
+The class prior is also a Bernoulli distribtuion, the MLE of which is by now familiar.
+
+$$\theta_{c=1}=\frac{N_1}{N}$$
+
+
+
+### d) Max_likelihood function
+
+```{r}
+X <- class_train
+y <- trainy
+
+Max_Likelihood <- function(X){
+
+  class1 <- X %>%
+    filter(X3==1)
+
+  class2 <- X %>%
+    filter(X3==0)
+  
+  N <- X %>% 
+    count(X3)
+  N1 <- N[2,'n'] 
+  N2 <- N[1,'n']
+
+  sumX1 <- class1 %>% 
+    summarise(sumX1=sum(X1),sumX2=sum(X2))
+  
+  sumX2 <- class2 %>% 
+    summarise(sumX1=sum(X1),sumX2=sum(X2))
+  
+  mu1 <-  as.matrix(1/N1)%*%as.matrix(sumX1)
+  mu2 <-  as.matrix(1/N2)%*%as.matrix(sumX2)
+
+  var01 <- class1 %>% 
+    mutate(X1=(X1-mu1[1])^2,X2=(X2-mu1[2])^2) %>% 
+    mutate(Z=X1+X2)
+  var02 <- class2 %>% 
+    mutate(X1=(X1-mu2[1])^2,X2=(X2-mu2[2])^2)%>% 
+    mutate(Z=X1+X2)
+    
+  sig1 <- var01 %>% 
+    summarise(total=sum(Z)*1/N1)
+    
+  sig2 <- var02 %>% 
+    summarise(total=sum(Z)*1/N2)
+    
+  
+  theta=N1/(N1+N2)
+
+  bigTheta <- list(mu2, sig2,mu1,sig1,theta)
+  return(bigTheta)
+}
+```
+
+
+
+

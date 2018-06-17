@@ -1,0 +1,37 @@
+---
+title: "Untitled"
+author: "Kendra Chalkley"
+date: "May 25, 2018"
+header-includes:
+   - \usepackage[mathletters]{ucs} 
+   - \usepackage{mathpazo}
+   - \usepackage[T1]{fontenc}
+   - \usepackage{mathpazo}
+   - \usepackage{graphicx}
+   - \usepackage{caption}
+   - \usepackage{adjustbox}
+   - \usepackage{xcolor} 
+   - \usepackage{enumerate}
+   - \usepackage{geometry} 
+   - \usepackage{textcomp} 
+   - \usepackage{upquote} 
+   - \usepackage{eurosym}
+   - \usepackage[utf8x]{inputenc}
+   - \usepackage{fancyvrb}
+   - \usepackage{grffile}
+   - \usepackage{hyperref}
+   - \usepackage{longtable}
+   - \usepackage{booktabs}
+   - \usepackage[inline]{enumitem}
+   - \usepackage[normalem]{ulem}
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tinytex)
+
+```
+
