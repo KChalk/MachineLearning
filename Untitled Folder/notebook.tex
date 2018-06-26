@@ -1,0 +1,688 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{MinimalProject}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Final project}\label{final-project}
+
+Kendra Chalkley
+
+CS 559 Machine Learning
+
+June 26, 2018
+
+\subsection{Motivation and Goals}\label{motivation-and-goals}
+
+Goal: Write an agglomerative clustering algorithm for Reddit data
+
+\subsubsection{Collecting this Data}\label{collecting-this-data}
+
+I initially collected this data as part of a replication project
+following
+\href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In
+and Absolute State} (Al-Mosaiwi and Johnstone, 2018). The study explored
+the use of 'asbolutist' words (always, never, completely, etc) in
+anxiety and depression related forums and found that absolutist words
+were used at significantly higher rate in these groups than in controls.
+The paper also compares the frequency of various other collections of
+words or dictionaries (pronouns, negative emotion words, et al)
+available through a software called LIWC for Linguistic Inquiry and Word
+Count.
+
+I wanted to use distributed computing to investigate these frequencies
+in a larger body of work, specifically Reddit data. Reddit.com is a
+website on which users can create and contribute to forums called
+'subreddits.' Subreddits cover a vast number of subjects including
+various mental illnesses, computing and gaming, sports, politics, the
+economy, and a large number of 'adult' topics. The dataset I've
+collected to use here is in csv format including information about
+approximately 1200 subreddits to which users contibutes text posts of at
+least 100 words in length. It includes the following columns;
+
+\begin{itemize}
+\item
+  subreddit the name a subreddit (\textless{}=20 characters)
+\item
+  posts a count of posts with 100 or more words in each subreddit
+\item
+  wordcount a sum of the total number of words in all posts in that
+  subreddit
+\item
+  65 additional columns, each containing the frequency of words in a
+  specific dictionary
+\item
+  64 from an outdated version of LIWC plus the absolutist dictionary
+  mentioned above.
+\item
+  freq the frequency of words from each dictionary calculated as:
+\end{itemize}
+
+\[\frac{number\ of\ words\ matching\ dictionary}{number\ of\ total\ words}\]
+
+\subsubsection{Why agglomerative
+clustering?}\label{why-agglomerative-clustering}
+
+Original study which I collected this data to replicate selected the
+forums they used by google search. They analyzed a small collection of
+forumns on a select number of topics. To approximate this approach, I
+tried running K-means clustering on this dataset for K between 5 and 25.
+No value of K clustering was obviously more effective than another, and,
+when projected onto the first two principal components, cluster
+boundaries seemed arbitrary and difficult to interpret.
+
+Hierarchical clustering is my next step in exploring this dataset, as I
+hope it will provide more insight into the relationship between
+clusters.
+
+\subsection{The Process}\label{the-process}
+
+\subsubsection{Packages and Reading
+data}\label{packages-and-reading-data}
+
+For this project I am using numpy to store my purely numerical data
+execute operations over large arrays and matrixes. Pandas provides
+additional support for numpy arrays and is useful for accessing columns
+of data by a variable name and for labeling rows with an index name. I
+am also using Matplotlib's pyplot to produce a few scatter plots of the
+data projected onto its first two components.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{o}{\PYZpc{}} \PY{n}{matplotlib} \PY{n}{inline}
+        
+        
+        \PY{n}{inputs}\PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{medoutput.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{subset\PYZus{}inputs}\PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subset\PYZus{}medoutput.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{n}{freqs}\PY{o}{=}\PY{n}{inputs}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{inputs}\PY{o}{.}\PY{n}{columns}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n+nb}{set}\PY{p}{(}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{count(1)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sum(wordcount)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+        \PY{n}{subset\PYZus{}freqs}\PY{o}{=}\PY{n}{subset\PYZus{}inputs}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{inputs}\PY{o}{.}\PY{n}{columns}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n+nb}{set}\PY{p}{(}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{count(1)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sum(wordcount)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+
+
+    \subsubsection{Preprocessing}\label{preprocessing}
+
+Because statistics for subreddits with a smaller number of posts vary so
+much more than subreddits with for which data was calculated from larger
+sample size, I've also curated a smaller subset of the data including
+only the half of subreddits with the most posts. This I read into to
+variable subset\_inputs from a local csv.
+
+Because this is my own dataset, the only additional preprocessing
+necessary was to normalize the values. The functions below normalize
+each column of the dataset to a range between 0 and 1, so that variation
+in dictionaries that have naturally higher values, such as functional
+word frequency, would not have greater impact on PCA and clustering than
+variation in dictionaries which occur with lower frequency: leisure
+words for example.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{def} \PY{n+nf}{normalize}\PY{p}{(}\PY{n}{vector}\PY{p}{)}\PY{p}{:}
+            \PY{n}{v2}\PY{o}{=}\PY{n}{vector}
+            \PY{n}{vmin}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{min}\PY{p}{(}\PY{n}{vector}\PY{p}{)}\PY{p}{)}
+            \PY{n}{vmax}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{max}\PY{p}{(}\PY{n}{vector}\PY{p}{)}\PY{p}{)}
+            \PY{n}{vrange}\PY{o}{=}\PY{n}{vmax}\PY{o}{\PYZhy{}}\PY{n}{vmin}
+        
+        \PY{c+c1}{\PYZsh{}    print(\PYZsq{}vector\PYZsq{}, vector, vrange)}
+            
+            \PY{n}{l}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{vector}\PY{p}{)}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{l}\PY{p}{)}\PY{p}{:}
+                \PY{n}{dif}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{vector}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{vmin}
+        \PY{c+c1}{\PYZsh{}        print(\PYZsq{}dif\PYZsq{},dif, vrange, dif/vrange)}
+                \PY{n}{v2}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{=}\PY{n}{dif}\PY{o}{/}\PY{n}{vrange}
+        \PY{c+c1}{\PYZsh{}        print(vector[i])}
+            \PY{k}{return} \PY{n}{v2}
+        
+        \PY{k}{def} \PY{n+nf}{normalizeall}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+            \PY{n}{df2}\PY{o}{=}\PY{n}{df}
+            \PY{n}{i}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{:}
+                \PY{n}{df2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n}{normalize}\PY{p}{(}\PY{n}{df2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+            \PY{k}{return} \PY{n}{df2}
+        
+        \PY{n}{nfreqs}\PY{o}{=}\PY{n}{normalizeall}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{freqs}\PY{p}{)}\PY{p}{)}
+        \PY{n}{nsubset\PYZus{}freqs}\PY{o}{=}\PY{n}{normalizeall}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{subset\PYZus{}freqs}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \subsection{The Algorithm}\label{the-algorithm}
+
+\subsubsection{Distance measures: Points and
+Clusters}\label{distance-measures-points-and-clusters}
+
+Need: Distance between points (Euclidean for now) outout= matrix,
+Distance between Clusters (average distance between points in each
+cluster)
+
+The algorithm requires several functions, one of which is a function to
+find the distance between two points of arbitrary dimensionality. My
+Function Point Distance calculates Euclidean distance, instead of L1,
+because of \%these reasons which sound v important\%.
+
+My next function is to find the center of the group of points. It simply
+takes the average of the values in all dimensions.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k}{def} \PY{n+nf}{pointDistance} \PY{p}{(}\PY{n}{point1}\PY{p}{,} \PY{n}{point2}\PY{p}{)}\PY{p}{:}
+            \PY{n}{dimNum}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{point1}\PY{p}{)}
+            \PY{k}{if} \PY{n}{dimNum}\PY{o}{!=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{point2}\PY{p}{)}\PY{p}{:}
+                \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{we have a dimensionality problem, Houston}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+                \PY{n+nb}{print}\PY{p}{(}\PY{n}{dimNum}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{point2}\PY{p}{)}\PY{p}{)}       
+        
+            \PY{n}{dif}\PY{o}{=}\PY{n}{point1}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{point2}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{n}{s}\PY{o}{=}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{dif}\PY{o}{.}\PY{n}{T}\PY{o}{*}\PY{n}{dif}\PY{p}{)}
+            \PY{n}{ssqrt}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{s}\PY{p}{)}
+            \PY{c+c1}{\PYZsh{}print(\PYZsq{}qrt2\PYZsq{},ssqrt)}
+            \PY{k}{return} \PY{n}{ssqrt}
+         
+        \PY{k}{def} \PY{n+nf}{findCenter}\PY{p}{(}\PY{n}{points}\PY{p}{)}\PY{p}{:}
+            \PY{n}{n}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{points}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{d}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{points}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{n}{center}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{d}\PY{p}{)}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{d}\PY{p}{)}\PY{p}{:}
+                \PY{n}{center}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{points}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+            \PY{k}{return} \PY{n}{center}
+\end{Verbatim}
+
+
+    \subsubsection{Distance Matrix}\label{distance-matrix}
+
+Then the remaining steps are to calculate the distance between all
+groups and merge the closest groups. To calculate the distance between
+groups, I'm using the distance between the averages, instead of the
+average distance between points, for the sake of efficiency.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{data}\PY{o}{=}\PY{n}{nsubset\PYZus{}freqs}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+        \PY{n}{n}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+        \PY{n}{d}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+        
+        \PY{n}{df}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+        \PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{index}
+        \PY{n}{centers}\PY{o}{=}\PY{n}{df}
+        
+        \PY{n}{distanceMatrix}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{)}
+        
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+            \PY{n}{pointa} \PY{o}{=} \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{p}{]}
+            \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if} \PY{n}{j}\PY{o}{\PYZlt{}}\PY{o}{=}\PY{n}{i}\PY{p}{:}
+                    \PY{n}{distanceMatrix}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{k+kc}{None}
+                \PY{k}{else}\PY{p}{:}
+                    \PY{n}{pointb} \PY{o}{=} \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{p}{]} 
+                    \PY{n}{distanceMatrix}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n}{pointDistance}\PY{p}{(}\PY{n}{pointa}\PY{p}{,} \PY{n}{pointb}\PY{p}{)}
+                    \PY{c+c1}{\PYZsh{}print(i,j,distanceMatrix[i][j])}
+        
+        \PY{n}{matrixCopy}\PY{o}{=}\PY{n}{distanceMatrix}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}            
+        \PY{n}{history}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{round1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \subsubsection{Merging Groups and Recording
+History}\label{merging-groups-and-recording-history}
+
+To merge points, I'm simply changing the group label as represented by
+the number to the smaller of the two numbers. We have to change the
+label for all points in the larger group and then recalculate the center
+given the center for the smaller group with the new points.
+
+The process of finding where certain values equal a given number, using
+the packages that I'm using (specifically, numpy and pandas), is a bit
+arcane. I create a boolean mask array which has true values wherever the
+original array equals the values I'm searching for, and then performs
+certain actions in the original array indexed by the mask. I'm storing
+the current state of the cluster assignments in an array/matrix called
+History so I can see how the hierarchical information in the tree came
+together. I'm also tracking this in a two dimensional array that lists
+which groups have merged at each step.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{c+c1}{\PYZsh{}distanceMatrix=matrixCopy.copy()}
+        \PY{c+c1}{\PYZsh{}data=nsubset\PYZus{}freqs.copy()}
+        \PY{n}{df}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+        \PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{index}
+        \PY{n}{centers}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+        \PY{n}{merges}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{head}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaves}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{groupsize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        
+        \PY{n}{iternum}\PY{o}{=}\PY{l+m+mi}{0}
+        \PY{k}{while} \PY{n}{np}\PY{o}{.}\PY{n}{nanmin}\PY{p}{(}\PY{n}{distanceMatrix}\PY{p}{)}\PY{o}{\PYZgt{}}\PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n}{minimum}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{nanmin}\PY{p}{(}\PY{n}{distanceMatrix}\PY{p}{)}
+            
+        \PY{c+c1}{\PYZsh{} get indexes where distance is minimum. find smaller group}
+            \PY{n}{mask}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{distanceMatrix}\PY{p}{,} \PY{n}{minimum}\PY{p}{)}
+            \PY{n}{a}\PY{p}{,}\PY{n}{b} \PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{mask}\PY{p}{)}
+            \PY{n}{groupa}\PY{o}{=}\PY{n+nb}{min}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+            \PY{n}{groupb}\PY{o}{=}\PY{n+nb}{max}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}    print(\PYZsq{}groupb\PYZsq{}, groupb, \PYZsq{}cluster\PYZsq{}, df.loc[groupb,\PYZsq{}cluster\PYZsq{}], \PYZsq{}groupa\PYZsq{}, groupa)}
+            
+        \PY{c+c1}{\PYZsh{}Find indexes of points in old group.}
+        
+            \PY{n}{mask}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{groupb} \PY{p}{)}
+            \PY{n}{index}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{mask}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}    print(index)}
+        \PY{c+c1}{\PYZsh{}    print(\PYZsq{}455\PYZsq{},df.loc[455,\PYZsq{}cluster\PYZsq{}], \PYZsq{}85\PYZsq{}, df.loc[85,\PYZsq{}cluster\PYZsq{},],\PYZsq{}48\PYZsq{},df.loc[48,\PYZsq{}cluster\PYZsq{}])}
+            
+            \PY{n}{df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{mask}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{groupa}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+            
+            
+        \PY{c+c1}{\PYZsh{}    print(\PYZsq{}groupb\PYZsq{}, groupb, \PYZsq{}cluster\PYZsq{}, df.loc[groupb,\PYZsq{}cluster\PYZsq{}], \PYZsq{}groupa\PYZsq{}, groupa)}
+        
+            \PY{n}{mask}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{groupa}\PY{p}{)}
+            \PY{c+c1}{\PYZsh{}print(mask)}
+        
+            \PY{n}{groupPoints}\PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{mask}\PY{p}{]}
+        
+        \PY{c+c1}{\PYZsh{}    print(iternum, \PYZsq{}group\PYZsq{}, groupa,\PYZsq{}n point(s) in group\PYZsq{}, len(groupPoints))}
+            \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{groupa}\PY{p}{]}\PY{o}{=}\PY{n}{findCenter}\PY{p}{(}\PY{n}{groupPoints}\PY{p}{)}
+            \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{groupb}\PY{p}{]}\PY{o}{=}\PY{k+kc}{None}
+        
+            \PY{n}{merges}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{iternum}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{head}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{groupa}
+            \PY{n}{merges}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{iternum}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaves}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{groupb}
+            \PY{n}{merges}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{iternum}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{groupsize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{groupPoints}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}    print(\PYZsq{}new center\PYZsq{},centers.iloc[groupa])}
+        
+            \PY{n}{history}\PY{p}{[}\PY{n+nb}{str}\PY{p}{(}\PY{n}{iternum}\PY{p}{)}\PY{p}{]}\PY{o}{=}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{n}{distanceMatrix}\PY{p}{[}\PY{n}{groupb}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{k+kc}{None}
+            \PY{n}{distanceMatrix}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{groupb}\PY{p}{]}\PY{o}{=}\PY{k+kc}{None}
+            
+                  
+            \PY{n}{i}\PY{o}{=}\PY{n}{groupa}
+            \PY{n}{pointa} \PY{o}{=} \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+            \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if} \PY{n}{j}\PY{o}{\PYZgt{}}\PY{n}{groupa}\PY{p}{:}
+                    \PY{n}{pointb} \PY{o}{=} \PY{n}{centers}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{p}{]} 
+                    \PY{n}{distanceMatrix}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n}{pointDistance}\PY{p}{(}\PY{n}{pointa}\PY{p}{,} \PY{n}{pointb}\PY{p}{)}
+                    \PY{c+c1}{\PYZsh{}print(\PYZdq{}changed a to b to value\PYZdq{}, pointa, pointb)}
+            \PY{n}{iternum}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+            
+        
+        \PY{c+c1}{\PYZsh{}\PYZsh{} recalculate distances between c and all other centers. }
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/home/kchalk/anaconda3/lib/python3.6/site-packages/ipykernel\_launcher.py:9: RuntimeWarning: All-NaN slice encountered
+  if \_\_name\_\_ == '\_\_main\_\_':
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{history}\PY{o}{.}\PY{n}{index}\PY{o}{=}\PY{n}{subset\PYZus{}inputs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        
+        \PY{n}{merges}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{head}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaves}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{desc}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+
+        TypeError                                 Traceback (most recent call last)
+
+        <ipython-input-6-b6901fb9cbb1> in <module>()
+          1 history.index=subset\_inputs['subreddit']
+          2 
+    ----> 3 merges.groupby('head').count().sort\_values('leaves', desc=True)
+    
+
+        TypeError: sort\_values() got an unexpected keyword argument 'desc'
+
+    \end{Verbatim}
+
+    \section{Graphs}\label{graphs}
+
+\subparagraph{what I have graphed}\label{what-i-have-graphed}
+
+In this graph, I projected the data onto two dimensional PCA space. I am
+graphing all 600 points in a scatter plot colored by cluster. Because of
+the size of the dataset, the only thing that one can actually see is
+that the number of colors reduces as the algorithm runs longer.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{decomposition} \PY{k}{import} \PY{n}{PCA}
+        
+        \PY{n}{pca}\PY{o}{=}\PY{n}{PCA}\PY{p}{(}\PY{n}{n\PYZus{}components}\PY{o}{=}\PY{l+m+mi}{11}\PY{p}{)}
+        \PY{n}{pcs}\PY{o}{=}\PY{n}{pca}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{subset\PYZus{}freqs}\PY{p}{)}
+        \PY{n}{plotData}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{pcs}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{subset\PYZus{}inputs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        
+        \PY{n}{plots}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+        \PY{n}{j}\PY{o}{=}\PY{l+m+mi}{0}
+        
+        \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
+        
+        
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{601}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{)}\PY{p}{:}
+            \PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{history}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{]}
+            \PY{n}{j}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{j}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \subparagraph{what I should graph}\label{what-i-should-graph}
+
+I would like to have drawn trees and subtrees for showing the merge
+history of the clusters, but I experienced difficulty with graphing
+trees in python.
+
+Another graph that I could make is to show the points in a given group
+as time moves on, which would show at what point large clusters merge
+together.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{j}\PY{o}{=}\PY{l+m+mi}{0}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{299}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}\PY{p}{:}
+            \PY{n}{plotData}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{pcs}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{subset\PYZus{}inputs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{history}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{]}
+            \PY{n}{mask}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{140}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{26}\PY{p}{,}\PY{l+m+mi}{111}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plotData}\PY{o}{=}\PY{n}{plotData}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{mask}\PY{p}{]}
+            \PY{n}{j}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{j}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Paired}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{639}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{)}\PY{p}{:}
+            \PY{n}{plotData}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{pcs}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{subset\PYZus{}inputs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{subreddit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{history}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{]}
+            \PY{n}{mask}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{140}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{26}\PY{p}{,}\PY{l+m+mi}{111}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plotData}\PY{o}{=}\PY{n}{plotData}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{mask}\PY{p}{]}
+            \PY{n}{j}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{j}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{n}{plotData}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cluster}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Paired}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \section{Future Directions}\label{future-directions}
+
+More data. More graphs. Point to point distance
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
